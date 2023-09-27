@@ -124,7 +124,7 @@ public class PlayerMovement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Enemy"))
+        if (other.gameObject.CompareTag("Enemy") && alive)
         {
             Debug.Log("Collided with goomba!");
             // play death animation
@@ -164,7 +164,7 @@ public class PlayerMovement : MonoBehaviour
         marioAnimator.SetTrigger("gameRestart");
         alive = true;
         // reset camera position
-        gameCamera.position = new Vector3(0, 0, -10);
+        gameCamera.position = new Vector3(4, 0, -10);
     }
 
     void PlayJumpSound()
