@@ -6,11 +6,13 @@ public class BlockHit : MonoBehaviour
     // number of time you can hit the block
     // negative means can hit infinite
     public int maxHits = -1;
-    private bool collectedItem = false;
     public Sprite emptyBox;
     private bool animating;
     public Animator blockAnimator;
     public GameObject item;
+
+    [System.NonSerialized]
+    private bool collectedItem = false;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {

@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
+    GameManager gameManager;
     // Start is called before the first frame update
     private void Start()
     {
+        gameManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<GameManager>();
         StartCoroutine(Animate());
     }
 
@@ -19,6 +21,7 @@ public class Coin : MonoBehaviour
         yield return Move(animatedPosition, restingPosition);
 
         Destroy(gameObject);
+        gameManager.IncreaseScore(1);
     }
 
     public IEnumerator Move(Vector3 from, Vector3 to)

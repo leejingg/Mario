@@ -1,32 +1,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
-    public int coins { get; private set; }
-    public int lives { get; private set; }
+    // events
+    public UnityEvent gameStart;
+    public UnityEvent gameRestart;
+    public UnityEvent<int> scoreChange;
+    public UnityEvent gameOver;
 
-    private void NewGame()
+    private int score = 0;
+
+    void Start()
     {
-        lives = 3;
-        coins = 0;
+        gameStart.Invoke();
+        Time.timeScale = 1.0f;
     }
 
-    public void AddCoin()
+    // Update is called once per frame
+    void Update()
     {
-        coins++;
 
-        if (coins == 100)
-        {
-            AddLive();
-            coins = 0;
-        }
     }
 
-    public void AddLive()
+    public void GameRestart()
     {
-        lives++;
+        // reset score
+        score = 0;
+        SetScore(score);
+        gameRestart.Invoke();
+        Time.timeScale = 1.0f;
+    }
+
+    public void IncreaseScore(int increment)
+    {
+        score += increment;
+        SetScore(score);
+    }
+
+    public void SetScore(int score)
+    {
+        scoreChange.Invoke(score);
+    }
+
+
+    public void GameOver()
+    {
+        Time.timeScale = 0.0f;
+        gameOver.Invoke();
     }
 }
