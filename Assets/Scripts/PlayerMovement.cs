@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
     public Animator marioAnimator;
     // for audio
     public AudioSource marioAudio;
-    public AudioClip marioDeath;
+    public AudioSource marioDeathAudio;
     public Transform gameCamera;
     private bool moving = false;
     private bool jumpedState = false;
@@ -69,6 +69,15 @@ public class PlayerMovement : MonoBehaviour
             onGroundState = true;
             // update animator state
             marioAnimator.SetBool("onGround", onGroundState);
+        }
+
+        if (col.gameObject.CompareTag("Enemy") && alive && !transform.DotTest(col.transform, Vector2.down))
+        {
+            Debug.Log("Collided with goomba!");
+            // play death animation
+            marioAnimator.Play("mario-die");
+            marioDeathAudio.PlayOneShot(marioDeathAudio.clip);
+            alive = false;
         }
     }
 
@@ -138,18 +147,6 @@ public class PlayerMovement : MonoBehaviour
     void GameOverScene()
     {
         gameManager.GameOver();
-    }
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.CompareTag("Enemy") && alive)
-        {
-            Debug.Log("Collided with goomba!");
-            // play death animation
-            marioAnimator.Play("mario-die");
-            marioAudio.PlayOneShot(marioDeath);
-            alive = false;
-        }
     }
 
     public void RestartButtonCallback()

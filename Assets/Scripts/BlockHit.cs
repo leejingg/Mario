@@ -13,6 +13,7 @@ public class BlockHit : MonoBehaviour
 
     [System.NonSerialized]
     private bool collectedItem = false;
+    public AudioSource blockAudio;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -46,6 +47,10 @@ public class BlockHit : MonoBehaviour
         {
             Instantiate(item, transform.position, Quaternion.identity);
             collectedItem = true;
+        }
+        else
+        {
+            blockAudio.PlayOneShot(blockAudio.clip);
         }
 
         StartCoroutine(Animate());

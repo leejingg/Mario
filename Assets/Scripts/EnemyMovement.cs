@@ -12,6 +12,11 @@ public class EnemyMovement : MonoBehaviour
     private Vector2 velocity;
     private Rigidbody2D enemyBody;
     public Vector3 startPosition = new Vector3(0.0f, 0.0f, 0.0f);
+    public Animator goombaAnimator;
+    public GameManager gameManager;
+    [System.NonSerialized]
+    public bool alive = true;
+    public AudioSource stompAudio;
 
     void Start()
     {
@@ -31,22 +36,44 @@ public class EnemyMovement : MonoBehaviour
 
     void Update()
     {
-        if (Mathf.Abs(enemyBody.position.x - originalX) < maxOffset)
-        {// move goomba
-            Movegoomba();
-        }
-        else
+        if (alive)
         {
-            // change direction
-            moveRight *= -1;
-            ComputeVelocity();
-            Movegoomba();
+            if (Mathf.Abs(enemyBody.position.x - originalX) < maxOffset)
+            {// move goomba
+                Movegoomba();
+            }
+            else
+            {
+                // change direction
+                moveRight *= -1;
+                ComputeVelocity();
+                Movegoomba();
+            }
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log(other.gameObject.name);
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            // collision.transform is mario
+            // transform is the block
+            // if mario collides with the box while moving up
+            // then hit the right direction
+            if (collision.transform.DotTest(transform, Vector2.down))
+            {
+                alive = false;
+                stompAudio.PlayOneShot(stompAudio.clip);
+                goombaAnimator.Play("goomba-stomp");
+            }
+        }
+    }
+
+    void StompGoomba()
+    {
+        gameManager.IncreaseScore(5);
+        Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        gameObject.SetActive(false);
     }
 
     public void GameRestart()
@@ -55,6 +82,8 @@ public class EnemyMovement : MonoBehaviour
         originalX = transform.position.x;
         moveRight = -1;
         ComputeVelocity();
+        gameObject.SetActive(true);
+        alive = true;
     }
 
 }
