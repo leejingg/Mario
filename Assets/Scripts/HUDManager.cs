@@ -2,20 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class HUDManager : MonoBehaviour
 {
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI scoreTextFinal;
     public GameObject gameOverUI;
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
+    public GameObject highscoreText;
+    public IntVariable gameScore;
 
-    // Update is called once per frame
-    void Update()
+    void Awake()
     {
+        // subscribe to events
+        GameManager.instance.gameStart.AddListener(GameStart);
+        GameManager.instance.gameOver.AddListener(GameOver);
+        GameManager.instance.gameRestart.AddListener(GameStart);
+        GameManager.instance.scoreChange.AddListener(SetScore);
 
     }
 
@@ -36,5 +39,15 @@ public class HUDManager : MonoBehaviour
         // show gameover scene
         gameOverUI.SetActive(true);
         scoreTextFinal.text = scoreText.text;
+        // set highscore
+        highscoreText.GetComponent<TextMeshProUGUI>().text = "High Score: " + gameScore.previousHighestValue.ToString("D6");
+        // show
+        highscoreText.SetActive(true);
+    }
+
+    public void ReturnToMain()
+    {
+        Debug.Log("Return to main menu");
+        SceneManager.LoadSceneAsync("MainMenu", LoadSceneMode.Single);
     }
 }

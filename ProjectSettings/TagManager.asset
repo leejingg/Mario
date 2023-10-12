@@ -19,7 +19,7 @@ TagManager:
   - 'Enemies '
   - Obstacles
   - PowerUp
-  - 
+  - Interactive
   - 
   - 
   - 
@@ -43,6 +43,15 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 2070910793
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Pipe
+    uniqueID: 3754509483
+    locked: 0
+  - name: Castle
+    uniqueID: 2204262045
     locked: 0

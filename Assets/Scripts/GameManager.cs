@@ -2,21 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
     // events
     public UnityEvent gameStart;
     public UnityEvent gameRestart;
     public UnityEvent<int> scoreChange;
     public UnityEvent gameOver;
-
-    private int score = 0;
+    public IntVariable gameScore;
+    private AudioSource audioSource;
 
     void Start()
     {
         gameStart.Invoke();
         Time.timeScale = 1.0f;
+        // subscribe to scene manager scene change
+        SceneManager.activeSceneChanged += SceneSetup;
+        audioSource = GetComponent<AudioSource>();
+        audioSource.Play();
+    }
+
+    public void SceneSetup(Scene current, Scene next)
+    {
+        gameStart.Invoke();
+        SetScore(gameScore.Value);
+        if (next.name == "World-1-1" || current.name == "World-1-1")
+        {
+            audioSource.Play();
+        }
     }
 
     // Update is called once per frame
@@ -28,20 +43,24 @@ public class GameManager : MonoBehaviour
     public void GameRestart()
     {
         // reset score
-        score = 0;
-        SetScore(score);
+        gameScore.Value = 0;
+        SetScore(0);
         gameRestart.Invoke();
         Time.timeScale = 1.0f;
+        audioSource.Stop();
+        audioSource.Play();
     }
 
     public void IncreaseScore(int increment)
     {
-        score += increment;
-        SetScore(score);
+        // increase score
+        gameScore.ApplyChange(increment);
+        SetScore(gameScore.Value);
     }
 
     public void SetScore(int score)
     {
+        // invoke score change event with current score to update HUD
         scoreChange.Invoke(score);
     }
 
@@ -50,5 +69,6 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0.0f;
         gameOver.Invoke();
+        audioSource.Stop();
     }
 }

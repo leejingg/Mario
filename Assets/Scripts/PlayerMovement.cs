@@ -2,18 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 10;
-    public float maxSpeed = 20;
+    public GameConstants gameConstants;
+    float deathImpulse;
+    float upSpeed;
+    float maxSpeed;
+    float speed;
     private Rigidbody2D marioBody;
-    public float upSpeed = 10;
-    public float deathImpulse = 40;
     private bool onGroundState = true;
     private SpriteRenderer marioSprite;
     private bool faceRightState = true;
-    public GameManager gameManager;
     public Animator marioAnimator;
     // for audio
     public AudioSource marioAudio;
@@ -25,14 +26,35 @@ public class PlayerMovement : MonoBehaviour
     [System.NonSerialized]
     public bool alive = true;
 
+    void Awake()
+    {
+        // subscribe to Game Restart event
+        GameManager.instance.gameRestart.AddListener(GameRestart);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        // Set constants
+        speed = gameConstants.speed;
+        maxSpeed = gameConstants.maxSpeed;
+        deathImpulse = gameConstants.deathImpulse;
+        upSpeed = gameConstants.upSpeed;
         // Set to be 30 FPS
         Application.targetFrameRate = 30;
         marioBody = GetComponent<Rigidbody2D>();
         marioSprite = GetComponent<SpriteRenderer>();
         marioAnimator.SetBool("onGround", onGroundState);
+        RestartButtonCallback();
+    }
+
+    public void SetStartingPosition(Scene current, Scene next)
+    {
+        if (next.name == "World-1-2")
+        {
+            // change the position accordingly in your World-1-2 case
+            this.transform.position = new Vector3(-3.86f, -3.83f, 0.0f);
+        }
     }
 
     // Update is called once per frame
@@ -146,19 +168,19 @@ public class PlayerMovement : MonoBehaviour
 
     void GameOverScene()
     {
-        gameManager.GameOver();
+        GameManager.instance.GameOver();
     }
 
     public void RestartButtonCallback()
     {
         Debug.Log("Restart!");
         // reset everything
-        ResetGame();
+        GameRestart();
         // resume time
         Time.timeScale = 1.0f;
     }
 
-    private void ResetGame()
+    private void GameRestart()
     {
         // reset position
         marioBody.transform.position = new Vector3(-1.89f, -3.83f, 0.0f);
