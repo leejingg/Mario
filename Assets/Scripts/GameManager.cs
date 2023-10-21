@@ -4,19 +4,21 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-public class GameManager : Singleton<GameManager>
+public class GameManager : MonoBehaviour
 {
     // events
     public UnityEvent gameStart;
-    public UnityEvent gameRestart;
     public UnityEvent<int> scoreChange;
-    public UnityEvent gameOver;
     public IntVariable gameScore;
     private AudioSource audioSource;
 
     void Start()
     {
         gameStart.Invoke();
+    }
+
+    public void GameStart()
+    {
         Time.timeScale = 1.0f;
         // subscribe to scene manager scene change
         SceneManager.activeSceneChanged += SceneSetup;
@@ -30,6 +32,7 @@ public class GameManager : Singleton<GameManager>
         SetScore(gameScore.Value);
         if (next.name == "World-1-1" || current.name == "World-1-1")
         {
+            gameScore.Value = 0;
             audioSource.Play();
         }
     }
@@ -45,7 +48,6 @@ public class GameManager : Singleton<GameManager>
         // reset score
         gameScore.Value = 0;
         SetScore(0);
-        gameRestart.Invoke();
         Time.timeScale = 1.0f;
         audioSource.Stop();
         audioSource.Play();
@@ -68,7 +70,6 @@ public class GameManager : Singleton<GameManager>
     public void GameOver()
     {
         Time.timeScale = 0.0f;
-        gameOver.Invoke();
         audioSource.Stop();
     }
 }

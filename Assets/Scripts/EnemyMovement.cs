@@ -1,27 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class EnemyMovement : MonoBehaviour
 {
     public GameConstants gameConstants;
     private float originalX;
-    float maxOffset;
-    float enemyPatroltime;
+    private float maxOffset;
+    private float enemyPatroltime;
     private int moveRight = -1;
     private Vector2 velocity;
     private Rigidbody2D enemyBody;
     public Vector3 startPosition = new Vector3(0.0f, 0.0f, 0.0f);
     public Animator goombaAnimator;
 
-    [System.NonSerialized]
-    public bool alive = true;
+    private bool alive = true;
     public AudioSource stompAudio;
 
-    void Awake()
-    {
-        GameManager.instance.gameRestart.AddListener(GameRestart);
-    }
+    public UnityEvent damagePlayer;
+
+    public UnityEvent<int> increaseScore;
 
     void Start()
     {
@@ -79,7 +79,7 @@ public class EnemyMovement : MonoBehaviour
 
     void StompGoomba()
     {
-        GameManager.instance.IncreaseScore(5);
+        increaseScore.Invoke(5);
         Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         gameObject.SetActive(false);
     }

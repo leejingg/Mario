@@ -10,6 +10,7 @@ public class CameraController : MonoBehaviour
     private float startX; // smallest x-coordinate of the Camera
     private float endX; // largest x-coordinate of the camera
     private float viewportHalfWidth;
+    private Vector3 startPosition;
 
     // Start is called before the first frame update
     void Start()
@@ -19,9 +20,12 @@ public class CameraController : MonoBehaviour
         // z doesn't matter since the camera is orthographic
         Vector3 bottomLeft = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0));
         viewportHalfWidth = Mathf.Abs(bottomLeft.x - this.transform.position.x);
+
         offset = this.transform.position.x - player.position.x;
         startX = this.transform.position.x;
         endX = endLimit.transform.position.x - viewportHalfWidth;
+
+        startPosition = transform.position;
     }
 
     // Update is called once per frame
@@ -31,5 +35,11 @@ public class CameraController : MonoBehaviour
         // check if desiredX is within startX and endX
         if (desiredX > startX && desiredX < endX)
             this.transform.position = new Vector3(desiredX, this.transform.position.y, this.transform.position.z);
+    }
+
+    public void GameRestart()
+    {
+        // reset camera position
+        transform.position = startPosition;
     }
 }

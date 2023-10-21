@@ -12,25 +12,15 @@ public class HUDManager : MonoBehaviour
     public GameObject highscoreText;
     public IntVariable gameScore;
 
-    void Awake()
-    {
-        // subscribe to events
-        GameManager.instance.gameStart.AddListener(GameStart);
-        GameManager.instance.gameOver.AddListener(GameOver);
-        GameManager.instance.gameRestart.AddListener(GameStart);
-        GameManager.instance.scoreChange.AddListener(SetScore);
-
-    }
-
     public void GameStart()
     {
         // hide gameover panel
         gameOverUI.SetActive(false);
     }
 
-    public void SetScore(int score)
+    public void SetScore()
     {
-        scoreText.text = "Score: " + score.ToString();
+        scoreText.text = "Score: " + gameScore.Value.ToString();
     }
 
 

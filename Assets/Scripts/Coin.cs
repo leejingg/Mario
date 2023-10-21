@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Coin : MonoBehaviour
 {
+    public UnityEvent<int> increaseScore;
     // Start is called before the first frame update
     private void Start()
     {
@@ -17,9 +19,8 @@ public class Coin : MonoBehaviour
 
         yield return Move(restingPosition, animatedPosition);
         yield return Move(animatedPosition, restingPosition);
-
+        increaseScore.Invoke(1);
         Destroy(gameObject);
-        GameManager.instance.IncreaseScore(1);
     }
 
     public IEnumerator Move(Vector3 from, Vector3 to)

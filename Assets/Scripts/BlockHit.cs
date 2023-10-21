@@ -15,12 +15,6 @@ public class BlockHit : MonoBehaviour
     private bool collectedItem = false;
     public AudioSource blockAudio;
 
-    void Awake()
-    {
-        // subscribe to Game Restart event
-        GameManager.instance.gameRestart.AddListener(GameRestart);
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (!animating && maxHits != 0 && collision.gameObject.CompareTag("Player"))
@@ -92,7 +86,7 @@ public class BlockHit : MonoBehaviour
         transform.localPosition = to;
     }
 
-    private void GameRestart()
+    public void GameRestart()
     {
         collectedItem = false;
         if (maxHits == 0)

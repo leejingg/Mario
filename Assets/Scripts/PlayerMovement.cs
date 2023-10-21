@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -25,12 +26,7 @@ public class PlayerMovement : MonoBehaviour
     // state
     [System.NonSerialized]
     public bool alive = true;
-
-    void Awake()
-    {
-        // subscribe to Game Restart event
-        GameManager.instance.gameRestart.AddListener(GameRestart);
-    }
+    public UnityEvent gameOver;
 
     // Start is called before the first frame update
     void Start()
@@ -168,7 +164,7 @@ public class PlayerMovement : MonoBehaviour
 
     void GameOverScene()
     {
-        GameManager.instance.GameOver();
+        gameOver.Invoke();
     }
 
     public void RestartButtonCallback()
@@ -180,7 +176,7 @@ public class PlayerMovement : MonoBehaviour
         Time.timeScale = 1.0f;
     }
 
-    private void GameRestart()
+    public void GameRestart()
     {
         // reset position
         marioBody.transform.position = new Vector3(-1.89f, -3.83f, 0.0f);
@@ -190,8 +186,6 @@ public class PlayerMovement : MonoBehaviour
         // reset animation
         marioAnimator.SetTrigger("gameRestart");
         alive = true;
-        // reset camera position
-        gameCamera.position = new Vector3(4, 0, -10);
     }
 
     void PlayJumpSound()
